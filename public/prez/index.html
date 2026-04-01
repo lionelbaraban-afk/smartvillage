@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Smart Village Africa — AI-Powered One Health for Rural Botswana. One Health Summit 2026.">
+<meta property="og:title" content="Smart Village Africa — One Health Intelligence">
+<meta property="og:description" content="Solar-powered AI kiosks delivering One Health services and disease surveillance to rural communities in Botswana.">
+<title>Smart Village Africa — One Health</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- React + Recharts via CDN -->
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<style>
+/* ── RESET & BASE ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:#F8F3EC;color:#141C18;overflow-x:hidden}
+
+/* ── LANG SYSTEM ── */
+[data-lang="en"] [data-fr],[data-lang="fr"] [data-en]{display:none!important}
+[data-lang="en"] [data-en],[data-lang="fr"] [data-fr]{display:revert}
+
+/* ── TOKENS ── */
+:root{
+  --forest:#163D2B;--forest-mid:#235C40;--forest-light:#3A7D57;
+  --earth:#B85C2C;--earth-light:#D98057;
+  --sage:#7FA887;--sky:#4A8FA8;--sky-light:#7BB8CC;
+  --gold:#C9983A;--gold-light:#E8C06A;
+  --cream:#F8F3EC;--cream-dark:#EDE5D8;
+  --dark:#141C18;--mid:#3D5248;--muted:#7A9080;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:300;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 4rem;
+  background:rgba(248,243,236,0.94);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(22,61,43,0.1);
+}
+.nav-brand{display:flex;align-items:center;gap:.6rem}
+.nav-mark{width:34px;height:34px;border-radius:9px;background:var(--forest);display:flex;align-items:center;justify-content:center;font-size:1rem}
+.nav-name{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:800;color:var(--forest)}
+.nav-name span{color:var(--earth)}
+.nav-right{display:flex;align-items:center;gap:1.8rem}
+.nav-links{display:flex;gap:1.8rem;list-style:none}
+.nav-links a{text-decoration:none;font-size:.8rem;font-weight:500;color:var(--mid);letter-spacing:.03em;text-transform:uppercase;transition:color .2s}
+.nav-links a:hover{color:var(--earth)}
+.lang-tog{display:flex;align-items:center;background:var(--forest);border-radius:100px;padding:3px;gap:2px}
+.lbtn{padding:.28rem .75rem;border-radius:100px;font-size:.72rem;font-weight:700;cursor:pointer;border:none;background:transparent;color:rgba(255,255,255,.45);transition:all .2s}
+.lbtn.on{background:#fff;color:var(--forest)}
+.nav-badge{
+  display:flex;align-items:center;gap:.4rem;
+  font-size:.7rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--earth);border:1px solid rgba(184,92,44,.35);
+  padding:.3rem .85rem;border-radius:100px;
+}
+.nav-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--earth);animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── HERO ── */
+#hero{
+  min-height:100vh;background:var(--forest);
+  display:grid;grid-template-columns:1fr 1fr;padding-top:72px;
+  position:relative;overflow:hidden;
+}
+.hero-glow{
+  position:absolute;pointer-events:none;
+  width:700px;height:700px;border-radius:50%;
+  background:radial-gradient(circle,rgba(58,125,87,.22) 0%,transparent 65%);
+  top:50%;left:65%;transform:translate(-50%,-50%);
+}
+.hero-l{
+  display:flex;flex-direction:column;justify-content:center;
+  padding:5rem 3rem 5rem 4.5rem;position:relative;z-index:2;
+}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:.45rem;
+  font-size:.7rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--gold-light);margin-bottom:1.6rem;
+  opacity:0;animation:up .6s .1s forwards;
+}
+.hero-tag::before{content:'🌿'}
+.hero-h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.8rem,4.5vw,4.8rem);font-weight:800;line-height:1;
+  color:#fff;letter-spacing:-.03em;margin-bottom:1rem;
+  opacity:0;animation:up .7s .2s forwards;
+}
+.hero-h1 em{display:block;font-weight:400;font-style:italic;color:var(--sage);font-size:.68em;margin-top:.12em}
+.hero-sub{
+  font-size:.98rem;line-height:1.75;color:rgba(255,255,255,.6);max-width:420px;
+  margin-bottom:2.2rem;opacity:0;animation:up .7s .35s forwards;
+}
+.hero-chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:2.2rem;opacity:0;animation:up .7s .45s forwards}
+.hchip{
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);
+  border-radius:100px;padding:.3rem .85rem;font-size:.75rem;color:rgba(255,255,255,.6);
+}
+.hero-cta{display:flex;gap:.75rem;flex-wrap:wrap;opacity:0;animation:up .7s .55s forwards}
+.btn-m{
+  background:var(--earth);color:#fff;padding:.75rem 1.7rem;border-radius:100px;
+  text-decoration:none;font-weight:600;font-size:.86rem;
+  transition:background .2s,transform .2s;display:inline-flex;align-items:center;gap:.4rem;
+}
+.btn-m:hover{background:var(--earth-light);transform:translateY(-2px)}
+.btn-g{
+  border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.75);
+  padding:.75rem 1.7rem;border-radius:100px;text-decoration:none;font-weight:400;font-size:.86rem;
+  transition:border-color .2s,background .2s;
+}
+.btn-g:hover{border-color:var(--sage);background:rgba(127,168,135,.1)}
+.hero-r{
+  display:flex;flex-direction:column;justify-content:center;gap:.9rem;
+  padding:3.5rem 3.5rem 3.5rem 1.5rem;position:relative;z-index:2;
+  opacity:0;animation:fadein 1s .5s forwards;
+}
+.hstat{
+  background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;padding:1.5rem 1.7rem;transition:background .3s;cursor:default;
+}
+.hstat:hover{background:rgba(255,255,255,.09)}
+.hstat-n{
+  font-family:'Playfair Display',serif;font-size:2.6rem;font-weight:800;
+  line-height:1;color:var(--sage);margin-bottom:.25rem;
+}
+.hstat-l{font-size:.75rem;font-weight:500;color:rgba(255,255,255,.4);letter-spacing:.04em;text-transform:uppercase}
+.hstat-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+@keyframes up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+
+/* ── SECTION BASE ── */
+.sec{padding:5.5rem 4.5rem}
+.stag{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--earth);margin-bottom:.8rem;display:block}
+.sh{font-family:'Playfair Display',serif;font-size:clamp(2rem,3.2vw,3.2rem);font-weight:800;line-height:1.05;letter-spacing:-.03em;color:var(--dark)}
+.sh em{font-style:italic;font-weight:400;color:var(--forest-mid)}
+.sb{font-size:.96rem;line-height:1.8;color:var(--mid);margin-top:1rem}
+.sb p+p{margin-top:.9rem}
+
+/* REVEAL */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .65s,transform .65s}
+.rv.on{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+
+/* ── PROJECT ── */
+#project{background:var(--cream)}
+.proj-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:4.5rem;margin-top:3rem;align-items:start}
+.pp-grid{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+.pp{background:var(--cream-dark);border-radius:14px;padding:1.3rem;border:1px solid rgba(22,61,43,.08);transition:transform .3s,box-shadow .3s}
+.pp:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(22,61,43,.1)}
+.pp-icon{font-size:1.5rem;margin-bottom:.6rem;display:block}
+.pp-t{font-size:.88rem;font-weight:600;color:var(--dark);margin-bottom:.25rem}
+.pp-s{font-size:.76rem;color:var(--muted);line-height:1.5}
+.pp-bar{height:3px;border-radius:100px;margin-top:.9rem;background:var(--forest-mid)}
+.pp:nth-child(2) .pp-bar{background:var(--earth)}
+.pp:nth-child(3) .pp-bar{background:var(--sky)}
+.pp:nth-child(4) .pp-bar{background:var(--gold)}
+
+/* ── ONE HEALTH ── */
+#onehealth{background:var(--forest);color:#fff}
+#onehealth .stag{color:var(--sage)}
+#onehealth .sh{color:#fff}
+#onehealth .sh em{color:var(--sage)}
+.oh-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:4.5rem;margin-top:3rem;align-items:start}
+.oh-body{color:rgba(255,255,255,.65)}
+.oh-q{font-family:'Playfair Display',serif;font-size:1.2rem;font-style:italic;font-weight:400;color:var(--sage);line-height:1.5;border-left:2px solid var(--sage);padding-left:1.4rem;margin-top:1.8rem}
+.oh-feats{display:flex;flex-direction:column;gap:.9rem}
+.oh-f{
+  background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);
+  border-radius:13px;padding:1.3rem;display:flex;gap:1rem;align-items:flex-start;
+  transition:background .3s;cursor:default;
+}
+.oh-f:hover{background:rgba(255,255,255,.09)}
+.oh-ficon{width:40px;height:40px;flex-shrink:0;background:rgba(127,168,135,.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.15rem}
+.oh-ft{font-size:.88rem;font-weight:600;color:#fff;margin-bottom:.2rem}
+.oh-fs{font-size:.78rem;color:rgba(255,255,255,.45);line-height:1.5}
+
+/* ── SURVEILLANCE INTRO ── */
+#surveillance{background:var(--cream-dark)}
+.surv-grid{display:grid;grid-template-columns:1fr 1fr;gap:4.5rem;margin-top:3rem;align-items:start}
+.surv-step{background:#fff;border-radius:13px;padding:1.2rem 1.4rem;display:flex;gap:.9rem;align-items:flex-start;border:1px solid rgba(22,61,43,.07);margin-bottom:.75rem}
+.sn{min-width:30px;height:30px;border-radius:50%;background:var(--forest);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0}
+.st{font-size:.86rem;font-weight:600;color:var(--dark);margin-bottom:.18rem}
+.ss{font-size:.76rem;color:var(--muted);line-height:1.5}
+
+/* ── DASHBOARD CONTAINER ── */
+#dashboard-wrap{
+  background:#0B1D2E;
+  margin:3rem 0 0;
+  border-radius:20px;overflow:hidden;
+  border:1px solid #1A3A54;
+  box-shadow:0 32px 80px rgba(0,0,0,.35);
+}
+
+/* ── PILOT ── */
+#pilot{background:var(--cream)}
+.pilot-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:4.5rem;margin-top:3rem;align-items:start}
+.pstats{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.ps{background:var(--forest);border-radius:15px;padding:1.6rem;transition:transform .3s;cursor:default}
+.ps:hover{transform:translateY(-3px)}
+.ps-n{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:800;color:var(--sage);line-height:1;margin-bottom:.25rem}
+.ps.ac .ps-n{color:var(--gold-light)}
+.ps-l{font-size:.74rem;font-weight:500;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.18rem}
+.ps-d{font-size:.72rem;color:rgba(255,255,255,.28);line-height:1.4}
+.pservices{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:1.4rem}
+.psvc{background:var(--cream-dark);border-radius:9px;padding:.65rem .9rem;display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--mid);font-weight:500;border:1px solid rgba(22,61,43,.07)}
+
+/* ── PARTNERS ── */
+#partners{background:var(--forest)}
+#partners .stag{color:var(--sage)}
+#partners .sh{color:#fff}
+.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5rem;margin-top:3rem}
+.pgt{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid rgba(255,255,255,.07)}
+.pchips{display:flex;flex-direction:column;gap:.5rem}
+.pchip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:9px;padding:.65rem .9rem;display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:rgba(255,255,255,.65);transition:background .2s;cursor:default}
+.pchip:hover{background:rgba(255,255,255,.1)}
+.pdot{width:7px;height:7px;border-radius:50%;background:var(--sage);flex-shrink:0}
+.pd-e{background:var(--earth-light)!important}
+.pd-s{background:var(--sky-light)!important}
+
+/* ── APP CARD ── */
+#tryapp{background:var(--cream-dark);padding:5.5rem 4.5rem;text-align:center}
+#tryapp .stag{display:block}
+.app-lnk{
+  display:block;text-decoration:none;max-width:820px;margin:3rem auto 0;
+  border-radius:18px;overflow:hidden;
+  box-shadow:0 24px 70px rgba(22,61,43,.18);
+  border:1px solid rgba(22,61,43,.1);
+  transition:transform .35s,box-shadow .35s;
+}
+.app-lnk:hover{transform:translateY(-7px) scale(1.01);box-shadow:0 40px 90px rgba(22,61,43,.22)}
+.abrow{background:#F0ECE6;display:flex;align-items:center;gap:1rem;padding:.75rem 1.1rem;border-bottom:1px solid rgba(22,61,43,.08)}
+.adots{display:flex;gap:5px}
+.adots span{width:10px;height:10px;border-radius:50%;background:#D1C9BE;display:block}
+.aurl{flex:1;text-align:center;background:#fff;border-radius:6px;padding:.28rem 1rem;font-size:.8rem;color:var(--mid);font-weight:500;border:1px solid rgba(22,61,43,.1)}
+.ago{font-size:.78rem;font-weight:700;color:var(--forest);letter-spacing:.03em}
+.aprev{display:grid;grid-template-columns:1fr 1fr;padding:2.2rem;gap:2rem;align-items:start;background:linear-gradient(135deg,var(--forest) 0%,var(--forest-mid) 100%)}
+.aptag{font-size:.7rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--sage);margin-bottom:.7rem}
+.apttl{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:800;color:#fff;line-height:1.15;margin-bottom:1.4rem;letter-spacing:-.02em}
+.apstats{display:flex;gap:1.1rem}
+.apsn{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:800;color:var(--gold-light);line-height:1}
+.apsl{font-size:.62rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.05em;margin-top:.12rem}
+.apmods{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.9rem}
+.apmod{border-radius:9px;padding:.5rem .7rem;font-size:.75rem;font-weight:600;display:flex;align-items:center;gap:.35rem}
+.am-g{background:rgba(58,125,87,.25);color:var(--sage)}
+.am-b{background:rgba(74,143,168,.25);color:var(--sky-light)}
+.am-o{background:rgba(184,92,44,.25);color:var(--earth-light)}
+.am-t{background:rgba(127,168,135,.2);color:var(--sage)}
+.apalert{background:rgba(184,92,44,.15);border:1px solid rgba(184,92,44,.3);border-radius:9px;padding:.75rem .9rem;display:flex;align-items:flex-start;gap:.6rem}
+.apalert-dot{width:7px;height:7px;border-radius:50%;background:var(--earth-light);flex-shrink:0;margin-top:4px;animation:blink 1.5s infinite}
+.apalert-t{font-size:.78rem;font-weight:600;color:#fff;margin-bottom:.18rem}
+.apalert-s{font-size:.68rem;color:rgba(255,255,255,.4)}
+.apbar{background:var(--forest);padding:.9rem 2rem;text-align:center}
+.apbar-t{font-size:.82rem;font-weight:500;color:rgba(255,255,255,.55);letter-spacing:.02em}
+
+/* ── CTA ── */
+#cta{background:var(--earth);padding:5.5rem 4.5rem;text-align:center;position:relative;overflow:hidden}
+.ctabg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(255,255,255,.07) 0%,transparent 65%)}
+.cta-in{position:relative;z-index:1;max-width:660px;margin:0 auto}
+.cta-tag{font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:1.1rem;display:block}
+.cta-h{font-family:'Playfair Display',serif;font-size:clamp(2rem,3.8vw,3.6rem);font-weight:800;line-height:1;color:#fff;letter-spacing:-.03em;margin-bottom:1.1rem}
+.cta-h em{font-style:italic;font-weight:400}
+.cta-s{font-size:.96rem;color:rgba(255,255,255,.7);line-height:1.7;margin-bottom:2.2rem}
+.cta-btns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+.btn-w{background:#fff;color:var(--earth);padding:.8rem 1.9rem;border-radius:100px;text-decoration:none;font-weight:600;font-size:.86rem;transition:transform .2s,background .2s}
+.btn-w:hover{transform:translateY(-2px);background:var(--cream)}
+.btn-ow{border:2px solid rgba(255,255,255,.4);color:#fff;padding:.8rem 1.9rem;border-radius:100px;text-decoration:none;font-weight:400;font-size:.86rem;transition:border-color .2s,background .2s}
+.btn-ow:hover{border-color:#fff;background:rgba(255,255,255,.1)}
+.cta-note{margin-top:1.8rem;font-size:.75rem;color:rgba(255,255,255,.38)}
+
+/* ── FOOTER ── */
+footer{background:var(--dark);padding:1.8rem 4.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.fb{font-family:'Playfair Display',serif;font-size:.92rem;font-weight:800;color:var(--cream)}
+.fb span{color:var(--sage)}
+.fl{display:flex;gap:1.5rem;list-style:none}
+.fl a{text-decoration:none;font-size:.76rem;color:rgba(255,255,255,.28);transition:color .2s}
+.fl a:hover{color:var(--sage)}
+.fc{font-size:.72rem;color:rgba(255,255,255,.18)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1100px){
+  nav{padding:1rem 2rem}
+  .sec{padding:4rem 2.5rem}
+  #hero{grid-template-columns:1fr}
+  .hero-l{padding:4rem 2.5rem 2rem}
+  .hero-r{padding:0 2.5rem 4rem}
+  .proj-grid,.oh-grid,.pilot-grid,.surv-grid{grid-template-columns:1fr;gap:3rem}
+  .pg{grid-template-columns:1fr 1fr}
+  footer{padding:1.5rem 2.5rem}
+}
+@media(max-width:768px){
+  nav{padding:1rem 1.5rem}
+  .nav-links{display:none}
+  .sec{padding:3.5rem 1.5rem}
+  #tryapp{padding:3.5rem 1.5rem}
+  #cta{padding:4rem 1.5rem}
+  .pp-grid,.pstats,.pservices{grid-template-columns:1fr}
+  .pg{grid-template-columns:1fr}
+  .aprev{grid-template-columns:1fr}
+  footer{padding:1.5rem;flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══════════════════════════════════════════════════ -->
+<nav>
+  <div class="nav-brand">
+    <div class="nav-mark">🌿</div>
+    <div class="nav-name">Smart<span>Village</span> Africa</div>
+  </div>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="#project" data-en>Project</a><a href="#project" data-fr>Projet</a></li>
+      <li><a href="#onehealth">One Health</a></li>
+      <li><a href="#surveillance" data-en>Surveillance</a><a href="#surveillance" data-fr>Surveillance</a></li>
+      <li><a href="#pilot" data-en>Pilot</a><a href="#pilot" data-fr>Pilote</a></li>
+      <li><a href="#partners" data-en>Partners</a><a href="#partners" data-fr>Partenaires</a></li>
+    </ul>
+    <div class="lang-tog">
+      <button class="lbtn on" onclick="setLang('en')">EN</button>
+      <button class="lbtn" onclick="setLang('fr')">FR</button>
+    </div>
+    <div class="nav-badge">
+      <span data-en>One Health Summit · Lyon 2026</span>
+      <span data-fr>Sommet One Health · Lyon 2026</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ HERO ════════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-l">
+    <div class="hero-tag">
+      <span data-en>One Health Summit · Lyon, April 2026</span>
+      <span data-fr>Sommet One Health · Lyon, Avril 2026</span>
+    </div>
+    <h1 class="hero-h1">
+      <span data-en>Smart Village<em>AI for People, Animals &amp; Planet</em></span>
+      <span data-fr>Smart Village<em>L'IA pour l'Homme, l'Animal &amp; la Planète</em></span>
+    </h1>
+    <p class="hero-sub" data-en>A rural AI platform live across 9 villages in Botswana — delivering One Health intelligence at the intersection of human health, animal health, and environmental monitoring.</p>
+    <p class="hero-sub" data-fr>Une plateforme rurale d'IA déployée dans 9 villages au Botswana — offrant une intelligence One Health à l'intersection de la santé humaine, animale et environnementale.</p>
+    <div class="hero-chips">
+      <div class="hchip">🇧🇼 Botswana</div>
+      <div class="hchip" data-en>9 Villages Live</div><div class="hchip" data-fr>9 Villages actifs</div>
+      <div class="hchip" data-en>732 Enrolled users</div><div class="hchip" data-fr>732 Utilisateurs</div>
+      <div class="hchip" data-en>Human · Animal · Environment</div><div class="hchip" data-fr>Humain · Animal · Environnement</div>
+    </div>
+    <div class="hero-cta">
+      <a href="#project" class="btn-m"><span data-en>Discover the project →</span><span data-fr>Découvrir le projet →</span></a>
+      <a href="#cta" class="btn-g"><span data-en>Connect with us</span><span data-fr>Nous contacter</span></a>
+    </div>
+  </div>
+  <div class="hero-r">
+    <div class="hstat">
+      <div class="hstat-n">2,622</div>
+      <div class="hstat-l" data-en>AI consultations delivered</div>
+      <div class="hstat-l" data-fr>Consultations IA délivrées</div>
+    </div>
+    <div class="hstat-row">
+      <div class="hstat"><div class="hstat-n">732</div><div class="hstat-l" data-en>Community members</div><div class="hstat-l" data-fr>Membres inscrits</div></div>
+      <div class="hstat"><div class="hstat-n">9</div><div class="hstat-l" data-en>Villages live</div><div class="hstat-l" data-fr>Villages actifs</div></div>
+    </div>
+    <div class="hstat">
+      <div class="hstat-n" style="color:var(--gold-light);font-size:1.1rem;font-family:'Playfair Display',serif;font-style:italic;font-weight:400;line-height:1.4" data-en>"Smart Villages, Smart Partnerships — Building Legacies that Connect People and Planet."</div>
+      <div class="hstat-n" style="color:var(--gold-light);font-size:1.1rem;font-family:'Playfair Display',serif;font-style:italic;font-weight:400;line-height:1.4" data-fr>"Des Villages Intelligents — Bâtir des Héritages qui Connectent les Hommes et la Planète."</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PROJECT ══════════════════════════════════════════════ -->
+<section id="project" class="sec">
+  <div class="rv"><span class="stag" data-en>The Project</span><span class="stag" data-fr>Le Projet</span>
+    <h2 class="sh" data-en>Smart Village Africa</h2><h2 class="sh" data-fr>Smart Village Africa</h2>
+  </div>
+  <div class="proj-grid">
+    <div class="rv d1">
+      <div class="sb">
+        <p data-en>Smart Village Africa is an AI-powered rural development platform deployed in Botswana, merging cutting-edge technology with indigenous knowledge to transform remote communities. Solar-powered Smart Kiosks serve as local intelligence hubs delivering essential services in Setswana and English.</p>
+        <p data-fr>Smart Village Africa est une plateforme rurale alimentée par l'IA, déployée au Botswana, qui associe technologie de pointe et savoirs locaux pour transformer les communautés rurales. Des kiosques intelligents alimentés à l'énergie solaire servent de hubs d'intelligence locale, en Setswana et en anglais.</p>
+        <p data-en>The platform operates at the nexus of the One Health approach — recognising that human health, animal health, and ecosystem health are deeply interconnected. Rural Africa sits at the front line of this intersection, and Smart Village turns every kiosk into a sentinel surveillance node.</p>
+        <p data-fr>La plateforme opère au cœur de l'approche One Health — reconnaissant que la santé humaine, animale et environnementale sont profondément interconnectées. L'Afrique rurale se trouve en première ligne de cette intersection, et Smart Village transforme chaque kiosque en nœud de surveillance sentinelle.</p>
+      </div>
+    </div>
+    <div class="pp-grid rv d2">
+      <div class="pp"><span class="pp-icon">🌾</span><div class="pp-t" data-en>Agriculture &amp; Food Security</div><div class="pp-t" data-fr>Agriculture &amp; Sécurité alimentaire</div><div class="pp-s" data-en>AI crop monitoring, precision farming, livestock health.</div><div class="pp-s" data-fr>Surveillance cultures, agriculture de précision, santé animale.</div><div class="pp-bar"></div></div>
+      <div class="pp"><span class="pp-icon">🏥</span><div class="pp-t" data-en>Healthcare &amp; Telemedicine</div><div class="pp-t" data-fr>Santé &amp; Télémédecine</div><div class="pp-s" data-en>AI diagnostics, telemedicine, outbreak prediction.</div><div class="pp-s" data-fr>Diagnostics IA, télémédecine, prédiction épidémique.</div><div class="pp-bar"></div></div>
+      <div class="pp"><span class="pp-icon">📡</span><div class="pp-t" data-en>Environmental Monitoring</div><div class="pp-t" data-fr>Surveillance environnementale</div><div class="pp-s" data-en>IoT sensors, soil, water, wildlife interface.</div><div class="pp-s" data-fr>Capteurs IoT, sol, eau, interface faune sauvage.</div><div class="pp-bar"></div></div>
+      <div class="pp"><span class="pp-icon">💡</span><div class="pp-t" data-en>Education &amp; Digital Skills</div><div class="pp-t" data-fr>Éducation &amp; Compétences digitales</div><div class="pp-s" data-en>AI tutoring in Setswana, digital literacy.</div><div class="pp-s" data-fr>Tutorat IA en Setswana, alphabétisation numérique.</div><div class="pp-bar"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ONE HEALTH ════════════════════════════════════════════ -->
+<section id="onehealth" class="sec">
+  <div class="rv"><span class="stag" data-en>The Application</span><span class="stag" data-fr>L'Application</span>
+    <h2 class="sh" data-en>One Health <em>Intelligence</em></h2><h2 class="sh" data-fr>Intelligence <em>One Health</em></h2>
+  </div>
+  <div class="oh-grid">
+    <div class="rv d1">
+      <div class="sb oh-body">
+        <p data-en>The One Health approach recognises that the health of people is closely connected to the health of animals and our shared environment. In rural Botswana, communities live in daily contact with livestock, wildlife, and fragile ecosystems — making this connection a daily reality, not a theory.</p>
+        <p data-fr>L'approche One Health reconnaît que la santé des personnes est étroitement liée à celle des animaux et de notre environnement commun. Dans le Botswana rural, les communautés vivent en contact quotidien avec le bétail, la faune sauvage et des écosystèmes fragiles.</p>
+        <p data-en>Our One Health application, embedded in every Smart Kiosk, creates a continuous feedback loop between community health workers, veterinarians, and environmental monitors — enabling real-time, AI-assisted surveillance across the human-animal-environment interface.</p>
+        <p data-fr>Notre application One Health crée une boucle de rétroaction continue entre agents de santé communautaire, vétérinaires et surveillants environnementaux — permettant une surveillance IA en temps réel à l'interface humain-animal-environnement.</p>
+      </div>
+      <blockquote class="oh-q rv d2">
+        <span data-en>"One kiosk. Three lenses: human health, animal health, ecosystem health. One data stream."</span>
+        <span data-fr>"Un kiosque. Trois angles : santé humaine, santé animale, santé de l'écosystème."</span>
+      </blockquote>
+    </div>
+    <div class="oh-feats">
+      <div class="oh-f rv d1"><div class="oh-ficon">🧠</div><div><div class="oh-ft" data-en>AI-Assisted Triage &amp; Diagnosis</div><div class="oh-ft" data-fr>Triage &amp; Diagnostic IA</div><div class="oh-fs" data-en>Community reporters log human and animal symptoms. AI cross-references epidemiological databases to flag zoonotic risks in real time.</div><div class="oh-fs" data-fr>Les agents communautaires signalent les symptômes humains et animaux. L'IA les croise avec des bases épidémiologiques pour détecter les risques zoonotiques.</div></div></div>
+      <div class="oh-f rv d2"><div class="oh-ficon">🗺️</div><div><div class="oh-ft" data-en>Geo-Mapped Disease Intelligence</div><div class="oh-ft" data-fr>Cartographie des maladies</div><div class="oh-fs" data-en>Every case is geo-tagged. Clusters across villages trigger automated alerts to veterinary and health authorities.</div><div class="oh-fs" data-fr>Chaque cas est géolocalisé. Les clusters entre villages déclenchent des alertes automatiques aux autorités sanitaires.</div></div></div>
+      <div class="oh-f rv d3"><div class="oh-ficon">🌡️</div><div><div class="oh-ft" data-en>IoT Environmental Sensing</div><div class="oh-ft" data-fr>Capteurs IoT environnementaux</div><div class="oh-fs" data-en>Soil, water, and microclimate sensors detect conditions favourable to disease vectors. AI predicts outbreak risk windows.</div><div class="oh-fs" data-fr>Des capteurs de sol, d'eau et de microclimat détectent les conditions favorables aux vecteurs de maladies.</div></div></div>
+      <div class="oh-f rv d4"><div class="oh-ficon">📱</div><div><div class="oh-ft" data-en>Multilingual Community Reporting</div><div class="oh-ft" data-fr>Signalement communautaire multilingue</div><div class="oh-fs" data-en>Voice and touch interfaces in Setswana and English ensure every community member can report health observations.</div><div class="oh-fs" data-fr>Interfaces vocales et tactiles en Setswana et anglais pour que chaque membre puisse signaler ses observations sanitaires.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SURVEILLANCE ═══════════════════════════════════════════ -->
+<section id="surveillance" class="sec" style="background:var(--cream-dark)">
+  <div class="rv"><span class="stag" data-en>Live Health Surveillance</span><span class="stag" data-fr>Surveillance Sanitaire en Direct</span>
+    <h2 class="sh" data-en>Early warning at <em>village level</em></h2><h2 class="sh" data-fr>Alerte précoce au <em>niveau villageois</em></h2>
+  </div>
+  <div class="surv-grid">
+    <div class="rv d1">
+      <div class="sb">
+        <p data-en>In remote communities, disease outbreaks often go undetected for weeks. Smart Village turns every kiosk into a sentinel surveillance node. Community reporters submit daily observations through AI-guided protocols. Patterns are detected automatically — alerts issued before an outbreak becomes a crisis.</p>
+        <p data-fr>Dans les communautés isolées, les épidémies passent souvent inaperçues pendant des semaines. Smart Village transforme chaque kiosque en nœud sentinelle. Des rapporteurs communautaires soumettent des observations quotidiennes via protocoles guidés par IA. Les schémas sont détectés automatiquement.</p>
+        <p data-en>This network links directly to Botswana's Department of Animal Health and the Ministry of Health — creating a community-driven layer of national biosurveillance, with particular focus on Foot-and-Mouth Disease (FMD), the most economically devastating livestock threat in the region.</p>
+        <p data-fr>Ce réseau est connecté au Département de la Santé Animale du Botswana — créant une couche communautaire de biosurveillance nationale, avec un focus particulier sur la Fièvre Aphteuse (FA), la menace animale la plus dévastatrice économiquement dans la région.</p>
+      </div>
+    </div>
+    <div class="rv d2">
+      <div class="surv-step"><div class="sn">1</div><div><div class="st" data-en>Community observation</div><div class="st" data-fr>Observation communautaire</div><div class="ss" data-en>Local reporters log daily health observations — humans, livestock, wildlife — via voice in Setswana.</div><div class="ss" data-fr>Des rapporteurs locaux enregistrent des observations sanitaires quotidiennes en Setswana, par voix ou écran.</div></div></div>
+      <div class="surv-step"><div class="sn">2</div><div><div class="st" data-en>AI pattern detection</div><div class="st" data-fr>Détection de schémas par IA</div><div class="ss" data-en>AI analyses symptom clusters across villages, correlating with environmental and climate data.</div><div class="ss" data-fr>L'IA analyse les clusters de symptômes entre villages, en corrélation avec les données environnementales.</div></div></div>
+      <div class="surv-step"><div class="sn">3</div><div><div class="st" data-en>Automated alert dispatch</div><div class="st" data-fr>Alerte automatisée</div><div class="ss" data-en>Threshold crossed → system notifies district vets, health officials, and ministry dashboards with geo-tagged maps.</div><div class="ss" data-fr>Seuil franchi → le système notifie vétérinaires, agents de santé et ministères avec cartes géolocalisées.</div></div></div>
+      <div class="surv-step"><div class="sn">4</div><div><div class="st" data-en>Rapid field response</div><div class="st" data-fr>Réponse rapide sur le terrain</div><div class="ss" data-en>Quarantine, vaccination campaigns enacted within 24h vs. current average of 10–21 days.</div><div class="ss" data-fr>Quarantaine et vaccination en 24h contre 10–21 jours actuellement.</div></div></div>
+    </div>
+  </div>
+
+  <!-- LIVE DASHBOARD -->
+  <div id="dashboard-wrap" class="rv">
+    <div id="dash-root" style="min-height:600px"></div>
+  </div>
+</section>
+
+<!-- ══ PILOT ══════════════════════════════════════════════════ -->
+<section id="pilot" class="sec">
+  <div class="rv"><span class="stag" data-en>The Pilot</span><span class="stag" data-fr>Le Pilote</span>
+    <h2 class="sh" data-en>Proven in the <em>field</em></h2><h2 class="sh" data-fr>Prouvé sur le <em>terrain</em></h2>
+  </div>
+  <div class="pilot-grid">
+    <div class="pstats rv d1">
+      <div class="ps"><div class="ps-n">732</div><div class="ps-l" data-en>Enrolled users</div><div class="ps-l" data-fr>Utilisateurs inscrits</div><div class="ps-d" data-en>Active community members</div><div class="ps-d" data-fr>Membres actifs</div></div>
+      <div class="ps ac"><div class="ps-n">2,622</div><div class="ps-l" data-en>AI consultations</div><div class="ps-l" data-fr>Consultations IA</div><div class="ps-d" data-en>Health, agriculture, environment</div><div class="ps-d" data-fr>Santé, agriculture, environnement</div></div>
+      <div class="ps"><div class="ps-n">9</div><div class="ps-l" data-en>Villages live</div><div class="ps-l" data-fr>Villages actifs</div><div class="ps-d" data-en>Botswana pilot, operational</div><div class="ps-d" data-fr>Pilote Botswana, opérationnel</div></div>
+      <div class="ps ac"><div class="ps-n">$0.04</div><div class="ps-l" data-en>Per consultation</div><div class="ps-l" data-fr>Par consultation</div><div class="ps-d" data-en>Scalable · Sustainable</div><div class="ps-d" data-fr>Évolutif · Durable</div></div>
+    </div>
+    <div class="rv d2">
+      <div class="sb">
+        <p data-en>The pilot is fully operational across 9 villages in Botswana, deployed in partnership with Change Africa (strategic deployment), Orange Botswana (connectivity), and BUAN — Botswana University of Agriculture and Natural Resources (scientific advisory).</p>
+        <p data-fr>Le pilote est entièrement opérationnel dans 9 villages au Botswana, déployé en partenariat avec Change Africa (déploiement stratégique), Orange Botswana (connectivité) et le BUAN (conseil scientifique).</p>
+        <p data-en>Each kiosk runs 100% on solar power with satellite + GSM connectivity, edge computing for offline capability, and a fully bilingual interface in Setswana and English — zero barriers to access for rural communities.</p>
+        <p data-fr>Chaque kiosque fonctionne à 100% à l'énergie solaire, avec connectivité satellite + GSM, edge computing hors ligne, et une interface bilingue Setswana/Anglais — aucune barrière d'accès pour les communautés rurales.</p>
+      </div>
+      <div class="pservices">
+        <div class="psvc"><span>🌾</span><span data-en>Agricultural AI</span><span data-fr>IA agricole</span></div>
+        <div class="psvc"><span>🏥</span><span data-en>Health monitoring</span><span data-fr>Suivi sanitaire</span></div>
+        <div class="psvc"><span>🐄</span><span data-en>Livestock surveillance</span><span data-fr>Surveillance bétail</span></div>
+        <div class="psvc"><span>📡</span><span data-en>Environmental IoT</span><span data-fr>IoT environnemental</span></div>
+        <div class="psvc"><span>🗺️</span><span data-en>Disease mapping</span><span data-fr>Cartographie maladies</span></div>
+        <div class="psvc"><span>☀️</span><span data-en>Solar · Offline-capable</span><span data-fr>Solaire · Hors-ligne</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PARTNERS ═══════════════════════════════════════════════ -->
+<section id="partners" class="sec">
+  <div class="rv"><span class="stag" data-en>Our Partners</span><span class="stag" data-fr>Nos Partenaires</span>
+    <h2 class="sh" data-en>A trusted <em>ecosystem</em></h2><h2 class="sh" data-fr>Un écosystème <em>de confiance</em></h2>
+  </div>
+  <div class="pg">
+    <div class="rv d1">
+      <div class="pgt" data-en>🏛 Institutional</div><div class="pgt" data-fr>🏛 Institutionnels</div>
+      <div class="pchips">
+        <div class="pchip"><div class="pdot"></div><span data-en>Embassy of France — Botswana</span><span data-fr>Ambassade de France — Botswana</span></div>
+        <div class="pchip"><div class="pdot"></div><span data-en>Ministry of Local Government</span><span data-fr>Ministère des Collectivités locales</span></div>
+        <div class="pchip"><div class="pdot"></div><span data-en>Dept. of Animal Health &amp; Production</span><span data-fr>Dept. de la Santé Animale</span></div>
+        <div class="pchip"><div class="pdot"></div><span data-en>Ministry of Communications</span><span data-fr>Ministère des Communications</span></div>
+      </div>
+    </div>
+    <div class="rv d2">
+      <div class="pgt" data-en>🤝 Implementation</div><div class="pgt" data-fr>🤝 Mise en œuvre</div>
+      <div class="pchips">
+        <div class="pchip"><div class="pdot pd-e"></div>Change Africa</div>
+        <div class="pchip"><div class="pdot pd-e"></div>Orange Botswana</div>
+        <div class="pchip"><div class="pdot pd-e"></div>BUAN — Botswana University of Agriculture</div>
+        <div class="pchip"><div class="pdot pd-e"></div>C-Suite Botswana</div>
+      </div>
+    </div>
+    <div class="rv d3">
+      <div class="pgt" data-en>💼 Private Sector</div><div class="pgt" data-fr>💼 Secteur Privé</div>
+      <div class="pchips">
+        <div class="pchip"><div class="pdot pd-s"></div>Alpha Direct Insurance</div>
+        <div class="pchip"><div class="pdot pd-s"></div>Stanbic Bank</div>
+        <div class="pchip"><div class="pdot pd-s"></div>Google.org</div>
+        <div class="pchip"><div class="pdot pd-s"></div>University of Botswana</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TRY THE APP ════════════════════════════════════════════ -->
+<section id="tryapp">
+  <div class="rv" style="max-width:680px;margin:0 auto 0">
+    <span class="stag" data-en>Live Platform</span><span class="stag" data-fr>Plateforme en direct</span>
+    <h2 class="sh" style="text-align:center" data-en>Experience Smart Village <em>now</em></h2>
+    <h2 class="sh" style="text-align:center" data-fr>Découvrez Smart Village <em>maintenant</em></h2>
+    <p class="sb" style="text-align:center;margin-top:.8rem" data-en>The platform is live. Explore the One Health dashboard, browse real AI consultations from Botswana villages, and see the surveillance network in action.</p>
+    <p class="sb" style="text-align:center;margin-top:.8rem" data-fr>La plateforme est en ligne. Explorez le tableau de bord One Health, consultez les interactions IA réelles des villages botswanais.</p>
+  </div>
+  <a href="https://smartvillage.africa" target="_blank" class="app-lnk rv">
+    <div class="abrow">
+      <div class="adots"><span></span><span></span><span></span></div>
+      <div class="aurl">smartvillage.africa</div>
+      <div class="ago" data-en>Open →</div><div class="ago" data-fr>Ouvrir →</div>
+    </div>
+    <div class="aprev">
+      <div>
+        <div class="aptag" data-en>🟢 Live · Botswana Pilot</div><div class="aptag" data-fr>🟢 En direct · Pilote Botswana</div>
+        <div class="apttl" data-en>One Health<br>Intelligence Platform</div><div class="apttl" data-fr>Plateforme d'Intelligence<br>One Health</div>
+        <div class="apstats">
+          <div><div class="apsn">732</div><div class="apsl" data-en>Users</div><div class="apsl" data-fr>Utilisateurs</div></div>
+          <div><div class="apsn">2,622</div><div class="apsl" data-en>Consultations</div><div class="apsl" data-fr>Consultations</div></div>
+          <div><div class="apsn">9</div><div class="apsl" data-en>Villages</div><div class="apsl" data-fr>Villages</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="apmods">
+          <div class="apmod am-g">🌾 <span data-en>Agriculture</span><span data-fr>Agriculture</span></div>
+          <div class="apmod am-b">🏥 <span data-en>Health</span><span data-fr>Santé</span></div>
+          <div class="apmod am-o">🐄 <span data-en>Livestock</span><span data-fr>Bétail</span></div>
+          <div class="apmod am-t">📡 <span data-en>Environment</span><span data-fr>Environnement</span></div>
+        </div>
+        <div class="apalert">
+          <div class="apalert-dot"></div>
+          <div>
+            <div class="apalert-t" data-en>FMD Alert — Chobe district</div><div class="apalert-t" data-fr>Alerte FA — District de Chobe</div>
+            <div class="apalert-s" data-en>3 cases flagged · 2h ago · Response dispatched</div><div class="apalert-s" data-fr>3 cas signalés · il y a 2h · Réponse déclenchée</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="apbar"><div class="apbar-t" data-en>👆 Click to explore the live platform</div><div class="apbar-t" data-fr>👆 Cliquez pour explorer la plateforme en direct</div></div>
+  </a>
+</section>
+
+<!-- ══ CTA ════════════════════════════════════════════════════ -->
+<section id="cta">
+  <div class="ctabg"></div>
+  <div class="cta-in rv">
+    <span class="cta-tag" data-en>One Health Summit 2026 · Lyon</span><span class="cta-tag" data-fr>Sommet One Health 2026 · Lyon</span>
+    <h2 class="cta-h" data-en>Let's build Africa's<br>health intelligence <em>together</em></h2>
+    <h2 class="cta-h" data-fr>Construisons ensemble<br>l'intelligence sanitaire <em>de l'Afrique</em></h2>
+    <p class="cta-s" data-en>Smart Village Africa seeks research, institutional and implementation partners committed to scaling One Health surveillance across Sub-Saharan Africa.</p>
+    <p class="cta-s" data-fr>Smart Village Africa recherche des partenaires de recherche, institutionnels et opérationnels pour déployer à grande échelle la surveillance One Health en Afrique subsaharienne.</p>
+    <div class="cta-btns">
+      <a href="/cdn-cgi/l/email-protection#accfc3c2d8cdcfd8ecdfc1cdded8dac5c0c0cdcbc982cdcadec5cfcd" class="btn-w" data-en>✉️ Contact us</a><a href="/cdn-cgi/l/email-protection#97f4f8f9e3f6f4e3d7e4faf6e5e3e1fefbfbf6f0f2b9f6f1e5fef4f6" class="btn-w" data-fr>✉️ Nous contacter</a>
+      <a href="https://smartvillage.africa" target="_blank" class="btn-ow" data-en>🌐 smartvillage.africa</a><a href="https://smartvillage.africa" target="_blank" class="btn-ow" data-fr>🌐 smartvillage.africa</a>
+    </div>
+    <div class="cta-note">Gaborone, Botswana · Embassy of France · KYX Africa</div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══════════════════════════════════════════════════ -->
+<footer>
+  <div class="fb">Smart<span>Village</span> Africa</div>
+  <ul class="fl">
+    <li><a href="#project" data-en>Project</a><a href="#project" data-fr>Projet</a></li>
+    <li><a href="#onehealth">One Health</a></li>
+    <li><a href="#surveillance" data-en>Surveillance</a><a href="#surveillance" data-fr>Surveillance</a></li>
+    <li><a href="#pilot" data-en>Pilot</a><a href="#pilot" data-fr>Pilote</a></li>
+  </ul>
+  <div class="fc">© 2026 Smart Village Africa · KYX Africa</div>
+</footer>
+
+<!-- ══ LANG + REVEAL JS ════════════════════════════════════════ -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+function setLang(l){
+  document.documentElement.setAttribute('data-lang',l);
+  document.querySelectorAll('.lbtn').forEach(b=>b.classList.toggle('on',b.textContent.toLowerCase()===l));
+}
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');obs.unobserve(e.target)}});
+},{threshold:.1});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+</script>
+
+<!-- ══ REACT DASHBOARD ═════════════════════════════════════════ -->
+<script type="text/babel">
+const { useState, useEffect } = React;
+const {
+  AreaChart, Area, BarChart, Bar, LineChart, Line,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
+} = Recharts;
+
+// ── DATA ─────────────────────────────────────────────────────
+const VILLAGES = ["Moo","Zwenshambe","Mahalapye","Nata","Kasane","Maun","Serowe","Palapye","Ghanzi"];
+
+const KIOSK_Q = {
+  human: [{date:"Jan",count:89},{date:"Feb",count:112},{date:"Mar",count:145},{date:"Apr",count:134},{date:"May",count:98},{date:"Jun",count:76}],
+  animal:[{date:"Jan",count:67},{date:"Feb",count:88},{date:"Mar",count:124},{date:"Apr",count:156},{date:"May",count:189},{date:"Jun",count:210}],
+  agri:  [{date:"Jan",count:120},{date:"Feb",count:156},{date:"Mar",count:134},{date:"Apr",count:98},{date:"May",count:78},{date:"Jun",count:65}],
+};
+
+const FMD_DATA = [
+  {week:"W1",cases:0,risk:12},{week:"W2",cases:0,risk:15},{week:"W3",cases:1,risk:22},
+  {week:"W4",cases:2,risk:35},{week:"W5",cases:3,risk:48},{week:"W6",cases:5,risk:62},
+  {week:"W7",cases:8,risk:75},{week:"W8",cases:14,risk:88},{week:"W9",cases:22,risk:92},
+  {week:"W10",cases:18,risk:78},{week:"W11",cases:12,risk:65},{week:"W12",cases:7,risk:45},
+];
+
+const WX = [
+  {day:"Mon",temp:32,rain:10},{day:"Tue",temp:34,rain:5},{day:"Wed",temp:31,rain:45},
+  {day:"Thu",temp:28,rain:80},{day:"Fri",temp:27,rain:60},{day:"Sat",temp:30,rain:15},{day:"Sun",temp:33,rain:5},
+];
+
+const VILLAGE_RISK = [
+  {name:"Moo",lat:-24.6,lng:25.9,humanRisk:32,animalRisk:88,agriRisk:45,fmdCases:14},
+  {name:"Zwenshambe",lat:-24.8,lng:26.1,humanRisk:18,animalRisk:72,agriRisk:55,fmdCases:8},
+  {name:"Mahalapye",lat:-23.1,lng:27.0,humanRisk:45,animalRisk:35,agriRisk:28,fmdCases:2},
+  {name:"Nata",lat:-20.2,lng:26.2,humanRisk:22,animalRisk:62,agriRisk:38,fmdCases:5},
+  {name:"Kasane",lat:-17.8,lng:25.1,humanRisk:55,animalRisk:48,agriRisk:22,fmdCases:3},
+  {name:"Maun",lat:-19.9,lng:23.4,humanRisk:28,animalRisk:58,agriRisk:42,fmdCases:4},
+  {name:"Serowe",lat:-22.4,lng:27.6,humanRisk:15,animalRisk:25,agriRisk:65,fmdCases:1},
+  {name:"Palapye",lat:-22.4,lng:27.1,humanRisk:20,animalRisk:30,agriRisk:48,fmdCases:0},
+  {name:"Ghanzi",lat:-21.7,lng:21.7,humanRisk:38,animalRisk:42,agriRisk:52,fmdCases:2},
+];
+
+const ALERTS = [
+  {id:1,level:"critical",title:"FMD Risk Level: CRITICAL",message:"68% spike in FMD-related kiosk queries in Moo village over 4 weeks. Cross-border FMD confirmed in Limpopo (SA) and Zimbabwe buffer zone. AI prediction: 87% probability of local outbreak within 14 days without intervention.",action:"Recommend immediate veterinary inspection + vaccination ring",time:"35 min ago"},
+  {id:2,level:"warning",title:"Respiratory Illness Cluster Detected",message:"Abnormal 94% increase in respiratory symptom queries across Moo and Zwenshambe. Correlates with weather forecast showing temperature drop + high humidity.",action:"Alert community health workers — distribute prevention advisories via kiosks",time:"2h ago"},
+  {id:3,level:"warning",title:"Crop Disease Risk Elevated",message:"Heavy rain forecast (80mm Thu-Fri) following extended dry spell. Historical pattern: 73% probability of fungal crop disease outbreak 5-7 days post-rain.",action:"Push preventive fungicide advisory to farmers via kiosk voice alerts",time:"4h ago"},
+  {id:4,level:"info",title:"Planting Window Advisory",message:"Soil moisture levels reaching optimal range for late-season cowpea planting in Central District. Weather models show favorable 10-day window starting Wednesday.",action:"Broadcast planting advisory through village kiosks",time:"6h ago"},
+];
+
+const NEWS = [
+  {id:1,source:"Reuters",time:"2h ago",title:"FMD outbreak confirmed in Limpopo Province, South Africa — 3 farms quarantined",cat:"animal",sev:"critical",icon:"🦠"},
+  {id:2,source:"WHO AFRO",time:"5h ago",title:"Seasonal malaria advisory issued for Southern Africa — increased transmission expected",cat:"human",sev:"warning",icon:"🏥"},
+  {id:3,source:"BUAN Research",time:"8h ago",title:"Fall armyworm detected in North-East sorghum fields — early intervention recommended",cat:"agri",sev:"warning",icon:"🌾"},
+  {id:4,source:"Botswana Met",time:"12h ago",title:"Heavy rainfall warning for Central District — flash flood risk elevated for 48h",cat:"weather",sev:"alert",icon:"⛈️"},
+  {id:5,source:"OIE/WOAH",time:"1d ago",title:"FMD SAT-2 strain identified in Zimbabwe buffer zone — cross-border surveillance urged",cat:"animal",sev:"critical",icon:"🦠"},
+  {id:6,source:"DVS Botswana",time:"2d ago",title:"Vaccination campaign launched — 12,000 cattle targeted in Ngamiland fence zones",cat:"animal",sev:"info",icon:"💉"},
+];
+
+const PREDS = [
+  {name:"FMD Spread",prob:87,tf:"14 days",impact:"High",color:"#EF5350",factors:["Cross-border cases confirmed","Kiosk query spike (68%)","Wet season mobility","Insufficient vaccination coverage"]},
+  {name:"Crop Fungal Outbreak",prob:73,tf:"5-7 days",impact:"Medium",color:"#FF9800",factors:["Heavy rain after dry spell","Historical pattern match","Vulnerable crop stage","Low fungicide stock reported"]},
+  {name:"Respiratory Wave",prob:62,tf:"7-10 days",impact:"Medium",color:"#F5A623",factors:["Temperature drop forecast","Query cluster detected","Seasonal timing match","Cross-village correlation"]},
+  {name:"Water-borne Disease",prob:45,tf:"10-14 days",impact:"Medium",color:"#42A5F5",factors:["Flood risk elevated","Zimbabwe cluster reported","Seasonal pattern","Infrastructure vulnerability"]},
+];
+
+// ── COLORS ────────────────────────────────────────────────────
+const C={
+  navy:"#0B1D2E",navyL:"#132D42",navyM:"#1A3A54",
+  teal:"#00897B",tealB:"#26A69A",tealG:"#00BFA5",
+  gold:"#F5A623",goldL:"#FFD54F",
+  red:"#EF5350",orange:"#FF9800",green:"#66BB6A",greenB:"#00E676",
+  blue:"#42A5F5",white:"#FFFFFF",
+  g300:"#B0BEC5",g600:"#546E7A",g800:"#263238",
+};
+
+// ── MINI COMPONENTS ───────────────────────────────────────────
+const Dot=({color,size=8,pulse=false})=>(
+  <span style={{display:"inline-block",width:size,height:size,borderRadius:"50%",backgroundColor:color,
+    boxShadow:`0 0 ${size}px ${color}60`,
+    animation:pulse?"pulse 2s ease-in-out infinite":"none"}}/>
+);
+
+const Badge=({level})=>{
+  const m={critical:{bg:"#EF535020",bc:"#EF5350",tc:"#EF5350",l:"CRITICAL"},
+    warning:{bg:"#FF980020",bc:"#FF9800",tc:"#FF9800",l:"WARNING"},
+    info:{bg:"#42A5F520",bc:"#42A5F5",tc:"#42A5F5",l:"INFO"},
+    normal:{bg:"#66BB6A20",bc:"#66BB6A",tc:"#66BB6A",l:"NORMAL"}};
+  const v=m[level]||m.info;
+  return <span style={{padding:"2px 10px",borderRadius:4,background:v.bg,border:`1px solid ${v.bc}`,
+    color:v.tc,fontSize:10,fontWeight:700,letterSpacing:1.2,textTransform:"uppercase",
+    fontFamily:"'JetBrains Mono',monospace"}}>{v.l}</span>;
+};
+
+const SC=({icon,label,value,sub,trend,trendUp,color=C.teal})=>(
+  <div style={{background:`linear-gradient(135deg,${C.navyL} 0%,${C.navyM} 100%)`,borderRadius:12,padding:"16px 18px",position:"relative",overflow:"hidden",borderLeft:`3px solid ${color}`}}>
+    <div style={{position:"absolute",top:-10,right:-10,fontSize:44,opacity:.06}}>{icon}</div>
+    <div style={{fontSize:10,color:C.g300,letterSpacing:.8,marginBottom:5,fontFamily:"'JetBrains Mono',monospace"}}>{label}</div>
+    <div style={{fontSize:26,fontWeight:800,color:C.white,lineHeight:1}}>{value}</div>
+    <div style={{display:"flex",alignItems:"center",gap:6,marginTop:7}}>
+      {trend&&<span style={{fontSize:10,color:trendUp?C.red:C.green,fontWeight:600}}>{trendUp?"▲":"▼"} {trend}</span>}
+      {sub&&<span style={{fontSize:10,color:C.g600}}>{sub}</span>}
+    </div>
+  </div>
+);
+
+// ── VILLAGE MAP ────────────────────────────────────────────────
+const VMap=({selected,onSelect,layer})=>{
+  const W=330,H=250,minLat=-25.5,maxLat=-17,minLng=20,maxLng=29;
+  const toX=lng=>((lng-minLng)/(maxLng-minLng))*(W-40)+20;
+  const toY=lat=>((maxLat-lat)/(maxLat-minLat))*(H-40)+20;
+  const getRisk=v=>layer==="human"?v.humanRisk:layer==="animal"?v.animalRisk:layer==="agri"?v.agriRisk:Math.max(v.humanRisk,v.animalRisk,v.agriRisk);
+  const getColor=r=>r>=70?C.red:r>=45?C.orange:r>=25?C.gold:C.green;
+  return (
+    <div style={{background:`linear-gradient(145deg,${C.navyL} 0%,#0a1520 100%)`,borderRadius:12,padding:14}}>
+      <div style={{fontSize:10,color:C.g300,letterSpacing:1,marginBottom:8,fontFamily:"'JetBrains Mono',monospace"}}>TERRITORY MAP — RISK OVERLAY</div>
+      <svg width={W} height={H} style={{display:"block"}}>
+        <path d="M60,220 L30,160 L40,100 L80,60 L140,30 L200,25 L260,40 L300,80 L310,140 L290,190 L240,230 L180,240 L120,235 Z"
+          fill={C.navyM} opacity={0.2} stroke={C.navyM} strokeWidth={1.5}/>
+        {VILLAGE_RISK.map(v=>{
+          const x=toX(v.lng),y=toY(v.lat),risk=getRisk(v),color=getColor(risk),sel=selected===v.name,r=sel?13:7+risk/28;
+          return (
+            <g key={v.name} onClick={()=>onSelect(v.name)} style={{cursor:"pointer"}}>
+              <circle cx={x} cy={y} r={r+9} fill={color} opacity={0.1}>
+                <animate attributeName="r" values={`${r+7};${r+13};${r+7}`} dur="3s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx={x} cy={y} r={r} fill={color} opacity={0.75} stroke={sel?C.white:"none"} strokeWidth={2}/>
+              <text x={x} y={y-r-4} textAnchor="middle" fill={C.white} fontSize={8} fontWeight={600}>{v.name}</text>
+              {v.fmdCases>0&&layer!=="human"&&layer!=="agri"&&(
+                <text x={x} y={y+4} textAnchor="middle" fill={C.white} fontSize={7} fontWeight={700}>{v.fmdCases}</text>
+              )}
+            </g>
+          );
+        })}
+      </svg>
+      <div style={{display:"flex",gap:10,marginTop:8,justifyContent:"center"}}>
+        {[["Low",C.green],["Medium",C.gold],["High",C.orange],["Critical",C.red]].map(([l,c])=>(
+          <div key={l} style={{display:"flex",alignItems:"center",gap:3}}>
+            <span style={{width:7,height:7,borderRadius:"50%",background:c,display:"inline-block"}}/>
+            <span style={{fontSize:8,color:C.g300}}>{l}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ── PAGES ─────────────────────────────────────────────────────
+const Overview=({setPage})=>{
+  const [layer,setLayer]=useState("all");
+  const [sel,setSel]=useState("Moo");
+  const blended=KIOSK_Q.human.map((h,i)=>({date:h.date,human:h.count,animal:KIOSK_Q.animal[i].count,agri:KIOSK_Q.agri[i].count}));
+  return (
+    <div>
+      {/* Alert Banner */}
+      <div style={{background:`linear-gradient(90deg,${C.red}15 0%,transparent 100%)`,borderLeft:`3px solid ${C.red}`,borderRadius:8,padding:"9px 14px",marginBottom:18,display:"flex",alignItems:"center",gap:10}}>
+        <Dot color={C.red} size={9} pulse/>
+        <span style={{fontSize:11,color:C.red,fontWeight:700}}>ACTIVE ALERT</span>
+        <span style={{fontSize:11,color:C.g300,flex:1}}>{ALERTS[0].title} — {ALERTS[0].time}</span>
+        <button onClick={()=>setPage("alerts")} style={{background:`${C.red}20`,border:`1px solid ${C.red}40`,color:C.red,padding:"3px 10px",borderRadius:5,fontSize:10,cursor:"pointer",fontWeight:600}}>View →</button>
+      </div>
+      {/* Stats */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12,marginBottom:18}}>
+        <SC icon="🏥" label="HUMAN QUERIES" value="654" sub="this quarter" trend="+18%" trendUp color={C.blue}/>
+        <SC icon="🐄" label="ANIMAL QUERIES" value="834" sub="this quarter" trend="+68%" trendUp color={C.red}/>
+        <SC icon="🌾" label="AGRI QUERIES" value="651" sub="this quarter" trend="-12%" color={C.green}/>
+        <SC icon="⚠️" label="ACTIVE ALERTS" value="4" sub="2 critical" color={C.gold}/>
+      </div>
+      {/* Main Grid */}
+      <div style={{display:"grid",gridTemplateColumns:"1fr 360px",gap:16}}>
+        <div>
+          {/* Trend Chart */}
+          <div style={{background:C.navyL,borderRadius:12,padding:18,marginBottom:16}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+              <div style={{fontSize:13,fontWeight:700,color:C.white}}>One Health Query Trends</div>
+              <div style={{display:"flex",gap:5}}>
+                {[["all","All"],["human","Human"],["animal","Animal"],["agri","Agri"]].map(([k,l])=>(
+                  <button key={k} onClick={()=>setLayer(k)} style={{padding:"3px 9px",borderRadius:5,fontSize:9,fontWeight:600,cursor:"pointer",background:layer===k?C.teal:"transparent",color:layer===k?C.white:C.g300,border:`1px solid ${layer===k?C.teal:C.navyM}`}}>{l}</button>
+                ))}
+              </div>
+            </div>
+            <ResponsiveContainer width="100%" height={200}>
+              <AreaChart data={blended}>
+                <defs>
+                  <linearGradient id="gB" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor={C.blue} stopOpacity={0.35}/><stop offset="95%" stopColor={C.blue} stopOpacity={0}/></linearGradient>
+                  <linearGradient id="gR" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor={C.red} stopOpacity={0.35}/><stop offset="95%" stopColor={C.red} stopOpacity={0}/></linearGradient>
+                  <linearGradient id="gG" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor={C.green} stopOpacity={0.35}/><stop offset="95%" stopColor={C.green} stopOpacity={0}/></linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke={C.navyM}/>
+                <XAxis dataKey="date" tick={{fill:C.g600,fontSize:10}} axisLine={{stroke:C.navyM}} tickLine={false}/>
+                <YAxis tick={{fill:C.g600,fontSize:10}} axisLine={{stroke:C.navyM}} tickLine={false}/>
+                <Tooltip contentStyle={{background:C.navy,border:`1px solid ${C.navyM}`,borderRadius:8,fontSize:11,color:C.white}}/>
+                {(layer==="all"||layer==="human")&&<Area type="monotone" dataKey="human" stroke={C.blue} fill="url(#gB)" strokeWidth={2} name="Human"/>}
+                {(layer==="all"||layer==="animal")&&<Area type="monotone" dataKey="animal" stroke={C.red} fill="url(#gR)" strokeWidth={2} name="Animal"/>}
+                {(layer==="all"||layer==="agri")&&<Area type="monotone" dataKey="agri" stroke={C.green} fill="url(#gG)" strokeWidth={2} name="Agriculture"/>}
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+          {/* FMD Chart */}
+          <div style={{background:C.navyL,borderRadius:12,padding:18,border:`1px solid ${C.red}20`}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+              <div>
+                <div style={{fontSize:13,fontWeight:700,color:C.white}}>🦠 FMD Outbreak Tracker</div>
+                <div style={{fontSize:10,color:C.g600,marginTop:2}}>Foot-and-Mouth Disease — 12-week rolling window</div>
+              </div>
+              <Badge level="critical"/>
+            </div>
+            <ResponsiveContainer width="100%" height={170}>
+              <AreaChart data={FMD_DATA}>
+                <defs>
+                  <linearGradient id="gFmd" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor={C.red} stopOpacity={0.4}/><stop offset="95%" stopColor={C.red} stopOpacity={0}/></linearGradient>
+                  <linearGradient id="gRsk" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor={C.gold} stopOpacity={0.3}/><stop offset="95%" stopColor={C.gold} stopOpacity={0}/></linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke={C.navyM}/>
+                <XAxis dataKey="week" tick={{fill:C.g600,fontSize:9}} axisLine={{stroke:C.navyM}} tickLine={false}/>
+                <YAxis tick={{fill:C.g600,fontSize:9}} axisLine={{stroke:C.navyM}} tickLine={false}/>
+                <Tooltip contentStyle={{background:C.navy,border:`1px solid ${C.navyM}`,borderRadius:8,fontSize:11,color:C.white}}/>
+                <Area type="monotone" dataKey="risk" stroke={C.gold} fill="url(#gRsk)" strokeWidth={2} strokeDasharray="5 3" name="AI Risk Score"/>
+                <Area type="monotone" dataKey="cases" stroke={C.red} fill="url(#gFmd)" strokeWidth={2.5} name="Confirmed Cases"/>
+              </AreaChart>
+            </ResponsiveContainer>
+            <div style={{display:"flex",gap:18,marginTop:6,justifyContent:"center"}}>
+              <span style={{fontSize:9,color:C.g300,display:"flex",alignItems:"center",gap:4}}><span style={{width:14,height:2,background:C.red,display:"inline-block",borderRadius:1}}/> Confirmed Cases</span>
+              <span style={{fontSize:9,color:C.g300,display:"flex",alignItems:"center",gap:4}}><span style={{width:14,height:2,background:C.gold,display:"inline-block",borderRadius:1}}/> AI Risk Prediction</span>
+            </div>
+          </div>
+        </div>
+        {/* Right Column */}
+        <div>
+          <VMap selected={sel} onSelect={setSel} layer={layer}/>
+          {/* Weather */}
+          <div style={{background:C.navyL,borderRadius:12,padding:12,marginTop:12}}>
+            <div style={{fontSize:9,color:C.g300,letterSpacing:1,marginBottom:8,fontFamily:"'JetBrains Mono',monospace"}}>7-DAY WEATHER — CENTRAL DISTRICT</div>
+            <div style={{display:"flex",gap:3,justifyContent:"space-between"}}>
+              {WX.map(d=>(
+                <div key={d.day} style={{textAlign:"center",padding:"5px 3px",borderRadius:7,flex:1,background:d.rain>40?`${C.blue}15`:"transparent",border:d.rain>40?`1px solid ${C.blue}30`:"1px solid transparent"}}>
+                  <div style={{fontSize:9,color:C.g600,marginBottom:3}}>{d.day}</div>
+                  <div style={{fontSize:14,marginBottom:2}}>{d.rain>40?"🌧":d.rain>15?"⛅":"☀️"}</div>
+                  <div style={{fontSize:11,fontWeight:700,color:C.white}}>{d.temp}°</div>
+                  <div style={{fontSize:8,color:d.rain>40?C.blue:C.g600}}>{d.rain}%</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* News */}
+          <div style={{background:C.navyL,borderRadius:12,padding:12,marginTop:12}}>
+            <div style={{fontSize:9,color:C.g300,letterSpacing:1,marginBottom:8,fontFamily:"'JetBrains Mono',monospace"}}>INTELLIGENCE FEED</div>
+            <div style={{maxHeight:220,overflowY:"auto"}}>
+              {NEWS.slice(0,4).map(n=>(
+                <div key={n.id} style={{padding:"8px 10px",borderRadius:7,marginBottom:5,borderLeft:`2px solid ${n.cat==="animal"?C.red:n.cat==="human"?C.blue:n.cat==="agri"?C.green:C.gold}`,background:n.sev==="critical"?"#EF535010":"transparent"}}>
+                  <div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}>
+                    <span style={{fontSize:9,color:n.cat==="animal"?C.red:n.cat==="human"?C.blue:C.green,fontWeight:600,letterSpacing:.4}}>{n.source}</span>
+                    <span style={{fontSize:9,color:C.g600}}>{n.time}</span>
+                  </div>
+                  <div style={{fontSize:10,color:C.white,lineHeight:1.4}}>{n.icon} {n.title}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const AlertsPage=()=>{
+  const [f,setF]=useState("all");
+  const list=f==="all"?ALERTS:ALERTS.filter(a=>a.level===f);
+  const bc={critical:C.red,warning:C.orange,info:C.blue};
+  return (
+    <div>
+      <div style={{display:"flex",gap:7,marginBottom:18}}>
+        {["all","critical","warning","info"].map(k=>(
+          <button key={k} onClick={()=>setF(k)} style={{padding:"5px 12px",borderRadius:7,fontSize:10,fontWeight:600,cursor:"pointer",background:f===k?C.teal:C.navyL,color:f===k?C.white:C.g300,border:`1px solid ${f===k?C.teal:C.navyM}`,textTransform:"capitalize"}}>{k==="all"?`All (${ALERTS.length})`:k}</button>
+        ))}
+      </div>
+      {list.map(a=>(
+        <div key={a.id} style={{background:a.level==="critical"?"#EF535008":a.level==="warning"?"#FF980008":"#42A5F508",borderLeft:`3px solid ${bc[a.level]||C.blue}`,borderRadius:8,padding:"13px 15px",marginBottom:10}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:5}}>
+            <div style={{display:"flex",alignItems:"center",gap:8}}><Badge level={a.level}/><span style={{fontSize:12,fontWeight:700,color:C.white}}>{a.title}</span></div>
+            <span style={{fontSize:9,color:C.g600,whiteSpace:"nowrap"}}>{a.time}</span>
+          </div>
+          <p style={{fontSize:11,color:C.g300,lineHeight:1.55,margin:"5px 0 9px"}}>{a.message}</p>
+          <div style={{fontSize:10,color:C.tealB,fontWeight:600,background:`${C.teal}15`,padding:"5px 9px",borderRadius:5}}>⚡ {a.action}</div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const PredsPage=()=>(
+  <div>
+    <div style={{background:`linear-gradient(135deg,${C.navyL} 0%,${C.navyM} 100%)`,borderRadius:12,padding:18,marginBottom:18}}>
+      <div style={{fontSize:13,fontWeight:700,color:C.white,marginBottom:5}}>🧠 AI Predictive Engine</div>
+      <p style={{fontSize:11,color:C.g300,lineHeight:1.6,margin:0}}>The prediction engine combines kiosk query patterns, external data (weather, news, cross-border surveillance), historical outbreak data, and seasonal models. Predictions are continuously refined as new data flows from the kiosk network.</p>
+    </div>
+    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+      {PREDS.map((p,i)=>(
+        <div key={i} style={{background:C.navyL,borderRadius:10,padding:15,border:`1px solid ${C.navyM}`}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:9}}>
+            <span style={{fontSize:12,fontWeight:700,color:C.white}}>{p.name}</span>
+            <span style={{fontSize:18,fontWeight:800,color:p.color,fontFamily:"'JetBrains Mono',monospace"}}>{p.prob}%</span>
+          </div>
+          <div style={{display:"flex",gap:12,marginBottom:9}}>
+            <div style={{fontSize:9,color:C.g300}}>Timeframe: <span style={{color:C.white,fontWeight:600}}>{p.tf}</span></div>
+            <div style={{fontSize:9,color:C.g300}}>Impact: <span style={{color:C.white,fontWeight:600}}>{p.impact}</span></div>
+          </div>
+          <div style={{height:4,borderRadius:2,background:C.navyM,marginBottom:9}}>
+            <div style={{height:"100%",borderRadius:2,background:p.color,width:`${p.prob}%`,boxShadow:`0 0 8px ${p.color}60`}}/>
+          </div>
+          <div style={{fontSize:9,color:C.g600,marginBottom:4,fontWeight:600}}>Contributing factors:</div>
+          {p.factors.map((f,j)=><div key={j} style={{fontSize:10,color:C.g300,padding:"1px 0",display:"flex",alignItems:"center",gap:5}}><span style={{color:p.color,fontSize:7}}>●</span>{f}</div>)}
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+const IntelPage=()=>{
+  const [cf,setCf]=useState("all");
+  const list=cf==="all"?NEWS:NEWS.filter(n=>n.cat===cf);
+  const catC={animal:C.red,human:C.blue,agri:C.green,weather:C.gold};
+  return (
+    <div>
+      <div style={{background:C.navyL,borderRadius:12,padding:18,marginBottom:16}}>
+        <div style={{fontSize:13,fontWeight:700,color:C.white,marginBottom:8}}>📡 External Intelligence Sources</div>
+        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+          {[["all","All"],["animal","🐄 Animal"],["human","🏥 Human"],["agri","🌾 Agriculture"],["weather","⛈️ Weather"]].map(([k,l])=>(
+            <button key={k} onClick={()=>setCf(k)} style={{padding:"4px 10px",borderRadius:5,fontSize:10,fontWeight:600,cursor:"pointer",background:cf===k?C.teal:"transparent",color:cf===k?C.white:C.g300,border:`1px solid ${cf===k?C.teal:C.navyM}`}}>{l}</button>
+          ))}
+        </div>
+      </div>
+      {list.map(n=>(
+        <div key={n.id} style={{padding:"9px 12px",borderRadius:7,marginBottom:6,borderLeft:`2px solid ${catC[n.cat]||C.g600}`,background:n.sev==="critical"?"#EF535012":"transparent"}}>
+          <div style={{display:"flex",gap:9,alignItems:"flex-start"}}>
+            <span style={{fontSize:16,flexShrink:0,marginTop:1}}>{n.icon}</span>
+            <div style={{flex:1}}>
+              <div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}>
+                <span style={{fontSize:9,color:catC[n.cat],fontWeight:600,letterSpacing:.4,textTransform:"uppercase"}}>{n.source}</span>
+                <span style={{fontSize:9,color:C.g600}}>{n.time}</span>
+              </div>
+              <div style={{fontSize:11,color:C.white,lineHeight:1.4,fontWeight:500}}>{n.title}</div>
+            </div>
+          </div>
+        </div>
+      ))}
+      {/* Correlation */}
+      <div style={{background:`linear-gradient(135deg,${C.navyM} 0%,${C.navyL} 100%)`,borderRadius:12,padding:18,marginTop:16,border:`1px solid ${C.teal}20`}}>
+        <div style={{fontSize:12,fontWeight:700,color:C.tealB,marginBottom:12}}>🔗 AI Correlation Engine — Active Pattern Matches</div>
+        {[
+          {ext:"FMD confirmed in Limpopo (Reuters) + FMD in Zimbabwe buffer zone (OIE)",int:"68% spike in FMD-related kiosk queries in Moo village",result:"→ CRITICAL: Cross-border FMD spread highly likely — 87% probability within 14 days",color:C.red},
+          {ext:"Heavy rainfall forecast 80mm Thu-Fri (Botswana Met)",int:"Historical pattern: post-rain fungal outbreaks in sorghum",result:"→ WARNING: 73% probability of crop disease outbreak in 5-7 days",color:C.orange},
+          {ext:"Diarrheal cluster in Matabeleland, Zimbabwe (SADC Health)",int:"Rising diarrhea queries in Moo kiosks + flood risk elevated",result:"→ MONITOR: Water-borne disease risk — 45% and rising",color:C.gold},
+        ].map((c,i)=>(
+          <div key={i} style={{background:C.navy,borderRadius:7,padding:12,marginBottom:8,borderLeft:`3px solid ${c.color}`}}>
+            <div style={{fontSize:10,color:C.g300,lineHeight:1.5,marginBottom:3}}><span style={{color:C.g600,fontWeight:600}}>EXTERNAL: </span>{c.ext}</div>
+            <div style={{fontSize:10,color:C.g300,lineHeight:1.5,marginBottom:5}}><span style={{color:C.g600,fontWeight:600}}>INTERNAL: </span>{c.int}</div>
+            <div style={{fontSize:11,color:c.color,fontWeight:700}}>{c.result}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ── MAIN DASHBOARD ────────────────────────────────────────────
+const NAV=[
+  {id:"overview",icon:"◉",label:"Situation Room"},
+  {id:"alerts",icon:"⚡",label:"Alerts & Actions"},
+  {id:"predictions",icon:"🧠",label:"AI Predictions"},
+  {id:"intelligence",icon:"📡",label:"Intelligence Feed"},
+];
+
+function Dashboard(){
+  const [page,setPage]=useState("overview");
+  const [time,setTime]=useState(new Date());
+  useEffect(()=>{const t=setInterval(()=>setTime(new Date()),1000);return()=>clearInterval(t)},[]);
+  const renderPage=()=>{
+    if(page==="alerts") return <AlertsPage/>;
+    if(page==="predictions") return <PredsPage/>;
+    if(page==="intelligence") return <IntelPage/>;
+    return <Overview setPage={setPage}/>;
+  };
+  return (
+    <div style={{minHeight:"100%",background:C.navy,color:C.white,fontFamily:"'Space Grotesk',-apple-system,sans-serif"}}>
+      <style>{`
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+        .dash-page::-webkit-scrollbar{width:3px}
+        .dash-page::-webkit-scrollbar-track{background:${C.navy}}
+        .dash-page::-webkit-scrollbar-thumb{background:${C.navyM};border-radius:2px}
+      `}</style>
+      {/* Top Bar */}
+      <div style={{background:`linear-gradient(90deg,${C.navyL} 0%,${C.navy} 100%)`,borderBottom:`1px solid ${C.navyM}`,padding:"11px 22px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <div style={{display:"flex",alignItems:"center",gap:12}}>
+          <div style={{width:34,height:34,borderRadius:9,background:`linear-gradient(135deg,${C.teal} 0%,${C.tealB} 100%)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontWeight:800,color:C.white,boxShadow:`0 0 18px ${C.teal}40`}}>SV</div>
+          <div>
+            <div style={{fontSize:14,fontWeight:700,color:C.white,letterSpacing:-.3}}>Smart Village</div>
+            <div style={{fontSize:9,color:C.tealB,letterSpacing:1.5,fontFamily:"'JetBrains Mono',monospace"}}>ONE HEALTH INTELLIGENCE · BOTSWANA</div>
+          </div>
+        </div>
+        <div style={{display:"flex",alignItems:"center",gap:18}}>
+          <div style={{display:"flex",alignItems:"center",gap:5}}><Dot color={C.greenB} size={7} pulse/><span style={{fontSize:10,color:C.g300}}>9 kiosks online</span></div>
+          <div style={{fontSize:11,color:C.g600,fontFamily:"'JetBrains Mono',monospace"}}>{time.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit",second:"2-digit"})}</div>
+          <div style={{width:30,height:30,borderRadius:"50%",background:C.navyM,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,color:C.tealB}}>LD</div>
+        </div>
+      </div>
+      <div style={{display:"flex"}}>
+        {/* Sidebar */}
+        <div style={{width:190,background:C.navyL,borderRight:`1px solid ${C.navyM}`,padding:"14px 0",flexShrink:0}}>
+          {NAV.map(n=>(
+            <button key={n.id} onClick={()=>setPage(n.id)} style={{display:"flex",alignItems:"center",gap:9,width:"100%",padding:"9px 18px",border:"none",cursor:"pointer",background:page===n.id?`${C.teal}20`:"transparent",borderLeft:page===n.id?`3px solid ${C.teal}`:"3px solid transparent",color:page===n.id?C.white:C.g600,fontSize:11,fontWeight:page===n.id?600:400,textAlign:"left",fontFamily:"'Space Grotesk',sans-serif",transition:"all .15s"}}>
+              <span style={{fontSize:14,width:18,textAlign:"center"}}>{n.icon}</span>{n.label}
+            </button>
+          ))}
+          <div style={{padding:"16px 18px 0",marginTop:"auto",borderTop:`1px solid ${C.navyM}`}}>
+            <div style={{fontSize:8,color:C.g600,letterSpacing:.8,marginBottom:7,fontFamily:"'JetBrains Mono',monospace"}}>PLATFORM STATUS</div>
+            {[["AI Engine","operational",C.green],["Data Pipeline","operational",C.green],["Weather Feed","operational",C.green],["News Scanner","operational",C.green],["Satellite","planned",C.g600]].map(([n,s,c])=>(
+              <div key={n} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"2px 0"}}>
+                <span style={{fontSize:9,color:C.g300}}>{n}</span>
+                <Dot color={c} size={5} pulse={s==="operational"}/>
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Content */}
+        <div className="dash-page" style={{flex:1,padding:22,overflowY:"auto",maxHeight:"680px"}}>
+          <div style={{marginBottom:18}}>
+            <h1 style={{fontSize:20,fontWeight:800,color:C.white,margin:0,letterSpacing:-.3}}>{NAV.find(n=>n.id===page)?.label}</h1>
+            <div style={{fontSize:10,color:C.g600,marginTop:3}}>Central District, Botswana — {time.toLocaleString("en-GB",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digi
